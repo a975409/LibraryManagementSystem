@@ -23,7 +23,7 @@ public partial class BasicUserInfo
     /// 使用者權限
     /// 0：一般使用者、1：管理者
     /// </summary>
-    public int? Role { get; set; }
+    public int Role { get; set; }
 
     /// <summary>
     /// 使用者狀態
@@ -31,15 +31,17 @@ public partial class BasicUserInfo
     /// </summary>
     public int Status { get; set; }
 
-    public int? Sequence { get; set; }
+    public int Sequence { get; set; }
 
     public bool Alive { get; set; }
 
-    public decimal? CreateUnixTime { get; set; }
-
     public string CreateTime { get; set; } = null!;
 
-    public decimal? UpdateUnixTime { get; set; }
+    public decimal CreateTimeUnix { get; set; }
 
     public string UpdateTime { get; set; } = null!;
+
+    public decimal UpdateTimeUnix { get; set; }
+
+    public Guid UpdateUserCode { get; set; }
 }

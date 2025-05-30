@@ -25,11 +25,13 @@ public partial class LibraryDBContext : DbContext
 
     public virtual DbSet<BasicUserInfo> BasicUserInfos { get; set; }
 
+    public virtual DbSet<ConfigPubcode> ConfigPubcodes { get; set; }
+
     public virtual DbSet<RelationBookInfo> RelationBookInfos { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=LibraryDB;Integrated Security=True;Trust Server Certificate=True");
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=LibraryDB;Integrated Security=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,9 +58,9 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.CreateTime)
                 .HasMaxLength(50)
                 .HasColumnName("createTime");
-            entity.Property(e => e.CreateUnixTime)
+            entity.Property(e => e.CreateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("createUnixTime");
+                .HasColumnName("createTimeUnix");
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
@@ -66,10 +68,10 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.UpdateTime)
                 .HasMaxLength(50)
                 .HasColumnName("updateTime");
-            entity.Property(e => e.UpdateUnixTime)
+            entity.Property(e => e.UpdateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("updateUnixTime");
-            entity.Property(e => e.UpdateUserInfoCode).HasColumnName("updateUserInfo_Code");
+                .HasColumnName("updateTimeUnix");
+            entity.Property(e => e.UpdateUserCode).HasColumnName("updateUser_Code");
         });
 
         modelBuilder.Entity<BasicBookInfo>(entity =>
@@ -91,9 +93,9 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.CreateTime)
                 .HasMaxLength(50)
                 .HasColumnName("createTime");
-            entity.Property(e => e.CreateUnixTime)
+            entity.Property(e => e.CreateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("createUnixTime");
+                .HasColumnName("createTimeUnix");
             entity.Property(e => e.Description)
                 .HasMaxLength(50)
                 .HasComment("摘要")
@@ -114,10 +116,10 @@ public partial class LibraryDBContext : DbContext
                 .HasMaxLength(50)
                 .HasComment("出版日期")
                 .HasColumnName("published_date");
-            entity.Property(e => e.PublishedUnixTime)
+            entity.Property(e => e.PublishedDateUnix)
                 .HasComment("出版日期")
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("published_UnixTime");
+                .HasColumnName("published_dateUnix");
             entity.Property(e => e.Sequence).HasColumnName("sequence");
             entity.Property(e => e.Status)
                 .HasComment("書籍狀態\r\n0：尚未上架、1：已上架、2：已下架")
@@ -129,10 +131,10 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.UpdateTime)
                 .HasMaxLength(50)
                 .HasColumnName("updateTime");
-            entity.Property(e => e.UpdateUnixTime)
+            entity.Property(e => e.UpdateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("updateUnixTime");
-            entity.Property(e => e.UpdateUserInfoCode).HasColumnName("updateUserInfo_Code");
+                .HasColumnName("updateTimeUnix");
+            entity.Property(e => e.UpdateUserCode).HasColumnName("updateUser_Code");
         });
 
         modelBuilder.Entity<BasicCategoryInfo>(entity =>
@@ -158,9 +160,9 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.CreateTime)
                 .HasMaxLength(50)
                 .HasColumnName("createTime");
-            entity.Property(e => e.CreateUnixTime)
+            entity.Property(e => e.CreateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("createUnixTime");
+                .HasColumnName("createTimeUnix");
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
@@ -171,10 +173,10 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.UpdateTime)
                 .HasMaxLength(50)
                 .HasColumnName("updateTime");
-            entity.Property(e => e.UpdateUnixTime)
+            entity.Property(e => e.UpdateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("updateUnixTime");
-            entity.Property(e => e.UpdateUserInfoCode).HasColumnName("updateUserInfo_Code");
+                .HasColumnName("updateTimeUnix");
+            entity.Property(e => e.UpdateUserCode).HasColumnName("updateUser_Code");
         });
 
         modelBuilder.Entity<BasicPublisherInfo>(entity =>
@@ -196,9 +198,9 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.CreateTime)
                 .HasMaxLength(50)
                 .HasColumnName("createTime");
-            entity.Property(e => e.CreateUnixTime)
+            entity.Property(e => e.CreateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("createUnixTime");
+                .HasColumnName("createTimeUnix");
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
@@ -210,10 +212,10 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.UpdateTime)
                 .HasMaxLength(50)
                 .HasColumnName("updateTime");
-            entity.Property(e => e.UpdateUnixTime)
+            entity.Property(e => e.UpdateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("updateUnixTime");
-            entity.Property(e => e.UpdateUserInfoCode).HasColumnName("updateUserInfo_Code");
+                .HasColumnName("updateTimeUnix");
+            entity.Property(e => e.UpdateUserCode).HasColumnName("updateUser_Code");
         });
 
         modelBuilder.Entity<BasicUserInfo>(entity =>
@@ -238,9 +240,9 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.CreateTime)
                 .HasMaxLength(50)
                 .HasColumnName("createTime");
-            entity.Property(e => e.CreateUnixTime)
+            entity.Property(e => e.CreateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("createUnixTime");
+                .HasColumnName("createTimeUnix");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .HasColumnName("email");
@@ -267,9 +269,41 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.UpdateTime)
                 .HasMaxLength(50)
                 .HasColumnName("updateTime");
-            entity.Property(e => e.UpdateUnixTime)
+            entity.Property(e => e.UpdateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("updateUnixTime");
+                .HasColumnName("updateTimeUnix");
+            entity.Property(e => e.UpdateUserCode).HasColumnName("updateUser_Code");
+        });
+
+        modelBuilder.Entity<ConfigPubcode>(entity =>
+        {
+            entity.HasKey(e => e.Code).IsClustered(false);
+
+            entity.ToTable("config_pubcode");
+
+            entity.HasIndex(e => e.Id, "IX_config_pubcode").IsClustered();
+
+            entity.Property(e => e.Code)
+                .ValueGeneratedNever()
+                .HasColumnName("code");
+            entity.Property(e => e.CodeKind)
+                .HasMaxLength(50)
+                .HasColumnName("codeKind");
+            entity.Property(e => e.CodeName)
+                .HasMaxLength(50)
+                .HasColumnName("codeName");
+            entity.Property(e => e.CodeNameEn)
+                .HasMaxLength(50)
+                .HasColumnName("codeName_en");
+            entity.Property(e => e.CodeValue)
+                .HasMaxLength(50)
+                .HasColumnName("codeValue");
+            entity.Property(e => e.Editable).HasColumnName("editable");
+            entity.Property(e => e.Enable).HasColumnName("enable");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("id");
+            entity.Property(e => e.Sequence).HasColumnName("sequence");
         });
 
         modelBuilder.Entity<RelationBookInfo>(entity =>
@@ -302,18 +336,18 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.CreateTime)
                 .HasMaxLength(50)
                 .HasColumnName("createTime");
-            entity.Property(e => e.CreateUnixTime)
+            entity.Property(e => e.CreateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("createUnixTime");
+                .HasColumnName("createTimeUnix");
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Sequence).HasColumnName("sequence");
             entity.Property(e => e.UpdateTime)
                 .HasMaxLength(50)
                 .HasColumnName("updateTime");
-            entity.Property(e => e.UpdateUnixTime)
+            entity.Property(e => e.UpdateTimeUnix)
                 .HasColumnType("decimal(20, 0)")
-                .HasColumnName("updateUnixTime");
-            entity.Property(e => e.UpdateUserInfoCode).HasColumnName("updateUserInfo_Code");
+                .HasColumnName("updateTimeUnix");
+            entity.Property(e => e.UpdateUserCode).HasColumnName("updateUser_Code");
         });
 
         OnModelCreatingPartial(modelBuilder);

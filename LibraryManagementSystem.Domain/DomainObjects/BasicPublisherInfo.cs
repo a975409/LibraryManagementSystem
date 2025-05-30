@@ -11,17 +11,17 @@ public partial class BasicPublisherInfo
 
     public string PublisherName { get; set; } = null!;
 
-    public int? Sequence { get; set; }
+    public int Sequence { get; set; }
 
     public bool Alive { get; set; }
 
-    public decimal? CreateUnixTime { get; set; }
-
     public string CreateTime { get; set; } = null!;
 
-    public decimal? UpdateUnixTime { get; set; }
+    public decimal CreateTimeUnix { get; set; }
 
     public string UpdateTime { get; set; } = null!;
 
-    public Guid? UpdateUserInfoCode { get; set; }
+    public decimal UpdateTimeUnix { get; set; }
+
+    public Guid UpdateUserCode { get; set; }
 }

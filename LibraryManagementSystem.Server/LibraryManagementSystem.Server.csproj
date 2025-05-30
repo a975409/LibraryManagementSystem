@@ -25,6 +25,7 @@
     <ProjectReference Include="..\librarymanagementsystem.client\librarymanagementsystem.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\LibraryManagementSystem.Contract\LibraryManagementSystem.Contract.csproj" />
   </ItemGroup>
 
 </Project>
