@@ -1,6 +1,7 @@
 ﻿
 
 using LibraryManagementSystem.Contract;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LibraryManagementSystem.Domain
 {
@@ -12,32 +13,34 @@ namespace LibraryManagementSystem.Domain
             _repository = repository;
         }
 
-        public void InsertBook(string title, string isbn, string publishedDate, string language, string description, List<BasicBookInfoDtos.relationOfInsertBook>? relationData)
+        public async Task<string> InsertBook(BasicBookInfoDtos.InsertData insertData)
         {
-            if (string.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(insertData.Title))
                 throw new ArgumentNullException("title");
-            if (string.IsNullOrEmpty(isbn))
+            if (string.IsNullOrEmpty(insertData.ISBN))
                 throw new ArgumentNullException("isbn");
-            if (string.IsNullOrEmpty(publishedDate))
+            if (string.IsNullOrEmpty(insertData.PublishedDate))
                 throw new ArgumentNullException("publishedDate");
-            if (string.IsNullOrEmpty(language))
+            if (string.IsNullOrEmpty(insertData.Language))
                 throw new ArgumentNullException("language");
-            if (string.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(insertData.Description))
                 throw new ArgumentNullException("description");
             
-            if (relationData == null)
+            if (insertData.RelationData == null)
                 throw new ArgumentNullException("relationData");
             else
             {
-                if (relationData.Any(m => m.Type == 0 && string.IsNullOrEmpty(m.Name) == false) == false)
+                if (insertData.RelationData.Any(m => m.Type == 0 && string.IsNullOrEmpty(m.Name) == false) == false)
                     throw new ArgumentNullException("authorList");
 
-                if (relationData.Any(m => m.Type == 2 && string.IsNullOrEmpty(m.Name) == false) == false)
+                if (insertData.RelationData.Any(m => m.Type == 2 && string.IsNullOrEmpty(m.Name) == false) == false)
                     throw new ArgumentNullException("publisherList");
             }
 
-            if (_repository.CheckISBNIsExist(isbn))
+            if (await _repository.CheckISBNIsExist(insertData.ISBN))
                 throw new ArgumentOutOfRangeException("isbn");
+
+            return await _repository.InsertBasicBookInfo(insertData);
         }
     }
 }

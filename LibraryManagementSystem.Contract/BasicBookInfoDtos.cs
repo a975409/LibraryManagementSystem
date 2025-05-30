@@ -37,6 +37,12 @@ namespace LibraryManagementSystem.Contract
             /// </summary>
             public string Description { get; set; }
 
+            /// <summary>
+            /// 書籍狀態
+            /// 0：尚未上架、1：已上架、2：已下架
+            /// </summary>
+            public int Status { get; set; } = 0;
+
             public IFormFile? ImgFile { get; set; } = null;
 
             /// <summary>
@@ -47,9 +53,96 @@ namespace LibraryManagementSystem.Contract
 
         public class relationOfInsertBook
         {
-            public Guid Code { get; set; }
-            public int Type { get;set; } 
+            public Guid? Code { get; set; } = null;
+            public int Type { get; set; }
             public string Name { get; set; }
+        }
+
+        public class DetailData
+        {
+            public int Id { get; set; }
+
+            public Guid Code { get; set; }
+
+            public string Title { get; set; } = null!;
+
+            public string Isbn { get; set; } = null!;
+
+            /// <summary>
+            /// 出版日期
+            /// </summary>
+            public string PublishedDate { get; set; } = null!;
+
+            /// <summary>
+            /// 出版日期
+            /// </summary>
+            public decimal PublishedDateUnix { get; set; }
+
+            public string Language { get; set; } = null!;
+
+            /// <summary>
+            /// 摘要
+            /// </summary>
+            public string Description { get; set; } = null!;
+
+            /// <summary>
+            /// 書籍封面圖
+            /// </summary>
+            public string ImgDataUri { get; set; } = null!;
+
+            /// <summary>
+            /// 書籍狀態
+            /// 0：尚未上架、1：已上架、2：已下架
+            /// </summary>
+            public int Status { get; set; }
+
+            public int Sequence { get; set; }
+
+            public bool Alive { get; set; }
+
+            public string CreateTime { get; set; } = null!;
+
+            public decimal CreateTimeUnix { get; set; }
+
+            public string UpdateTime { get; set; } = null!;
+
+            public decimal UpdateTimeUnix { get; set; }
+
+            public Guid UpdateUserCode { get; set; }
+
+            public List<DetailDataOfRelation> RelationBookInfos { get; set; }
+        }
+
+
+        public class DetailDataOfRelation
+        {
+            public int Id { get; set; }
+
+            public Guid Code { get; set; }
+
+            public Guid BasicBookInfoCode { get; set; }
+
+            /// <summary>
+            /// 0：basic_authorInfo、1：basic_categoryInfo、2：basic_publisherInfo
+            /// </summary>
+            public int BasicType { get; set; }
+
+            public Guid BasicCode { get; set; }
+            public string Name { get; set; }
+
+            public int Sequence { get; set; }
+
+            public bool Alive { get; set; }
+
+            public string CreateTime { get; set; } = null!;
+
+            public decimal CreateTimeUnix { get; set; }
+
+            public string UpdateTime { get; set; } = null!;
+
+            public decimal UpdateTimeUnix { get; set; }
+
+            public Guid UpdateUserCode { get; set; }
         }
     }
 }

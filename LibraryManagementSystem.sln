@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.Contract", "LibraryManagementSystem.Contract\LibraryManagementSystem.Contract.csproj", "{A1282ACB-0C72-4D5A-819F-E6742307030E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.Common", "LibraryManagementSystem.Common\LibraryManagementSystem.Common.csproj", "{E0DAA685-95F4-44FE-BB33-E79C8E05602B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{A1282ACB-0C72-4D5A-819F-E6742307030E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1282ACB-0C72-4D5A-819F-E6742307030E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1282ACB-0C72-4D5A-819F-E6742307030E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0DAA685-95F4-44FE-BB33-E79C8E05602B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0DAA685-95F4-44FE-BB33-E79C8E05602B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0DAA685-95F4-44FE-BB33-E79C8E05602B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0DAA685-95F4-44FE-BB33-E79C8E05602B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
