@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Dapper;
 using LibraryManagementSystem.Contract;
 using LibraryManagementSystem.Common;
+using Microsoft.Data.SqlClient;
+using static LibraryManagementSystem.Contract.BasicBookInfoDtos;
+using System;
 
 namespace LibraryManagementSystem.Domain
 {
@@ -17,9 +20,19 @@ namespace LibraryManagementSystem.Domain
             _fileManager = fileManager;
         }
 
-        public Task<bool> CheckISBNIsExist(string isbn)
+        public async Task<bool> CanUpdateBookInfo(int id, Guid code)
         {
-            return _context.BasicBookInfos.AsNoTracking().AnyAsync(m => m.Isbn == isbn && m.Alive == true);
+            var result = await _context.BasicBookInfos.FirstOrDefaultAsync(m => m.Id == id && m.Code == code && m.Alive == true);
+
+            if (result == null)
+                throw new ArgumentNullException("notFound");
+
+            return result.Status != 1;
+        }
+
+        public async Task<bool> CheckISBNIsExist(string isbn)
+        {
+            return await _context.BasicBookInfos.AsNoTracking().AnyAsync(m => m.Isbn == isbn && m.Alive == true);
         }
 
         public async Task<BasicBookInfoDtos.DetailData> GetDetailByCode(string code)
@@ -51,43 +64,23 @@ namespace LibraryManagementSystem.Domain
                 RelationBookInfos = new List<BasicBookInfoDtos.DetailDataOfRelation>()
             };
 
-            var relationList = await _context.RelationBookInfos.AsNoTracking().Where(m => m.BasicBookInfoCode.ToString() == code && m.Alive == true).ToListAsync();
+            string connectionString = _context.Database.GetConnectionString() ?? "";
 
-            foreach (var relation in relationList)
+            using (var conn = new SqlConnection(connectionString))
             {
-                var resultItem = new BasicBookInfoDtos.DetailDataOfRelation
-                {
-                    Alive = relation.Alive,
-                    BasicType = relation.BasicType,
-                    BasicBookInfoCode = relation.BasicBookInfoCode,
-                    BasicCode = relation.BasicCode,
-                    Code = relation.Code,
-                    CreateTime = relation.CreateTime,
-                    CreateTimeUnix = relation.CreateTimeUnix,
-                    Id = relation.Id,
-                    Sequence = relation.Sequence,
-                    UpdateTime = relation.UpdateTime,
-                    UpdateTimeUnix = relation.UpdateTimeUnix,
-                    UpdateUserCode = relation.UpdateUserCode,
-                };
+                await conn.OpenAsync();
+                string query = @"select relation_bookInfo.*,basic_authorInfo.authorName,basic_categoryInfo.categoryName,basic_publisherInfo.publisherName from relation_bookInfo
+                                  left join basic_authorInfo on relation_bookInfo.basic_type=0 and basic_authorInfo.code=relation_bookInfo.code
+                                  left join basic_categoryInfo on relation_bookInfo.basic_type=1 and basic_categoryInfo.code=relation_bookInfo.code
+                                  left join basic_publisherInfo on relation_bookInfo.basic_type=2 and basic_publisherInfo.code=relation_bookInfo.code
+                                  where relation_bookInfo.alive=1 and relation_bookInfo.basic_bookInfo_code=@basic_bookInfo_code";
 
-                if (relation.BasicType == 0)
-                {
-                    var result = await _context.BasicAuthorInfos.AsNoTracking().FirstOrDefaultAsync(m => m.Alive == true && m.Code == relation.BasicCode);
-                    resultItem.Name = result?.AuthorName ?? "";
-                }
-                else if (relation.BasicType == 1)
-                {
-                    var result = await _context.BasicCategoryInfos.AsNoTracking().FirstOrDefaultAsync(m => m.Alive == true && m.Code == relation.BasicCode);
-                    resultItem.Name = result?.CategoryName ?? "";
-                }
-                else if (relation.BasicType == 2)
-                {
-                    var result = await _context.BasicPublisherInfos.AsNoTracking().FirstOrDefaultAsync(m => m.Alive == true && m.Code == relation.BasicCode);
-                    resultItem.Name = result?.PublisherName ?? "";
-                }
+                var parameters = new DynamicParameters();
+                parameters.Add("@basic_bookInfo_code", basicBookInfo.Code);
 
-                dto.RelationBookInfos.Add(resultItem);
+                var resultRelation = await conn.QueryAsync<BasicBookInfoDtos.DetailDataOfRelation>(query, parameters);
+
+                dto.RelationBookInfos = resultRelation.ToList();
             }
 
             return dto;
@@ -110,7 +103,7 @@ namespace LibraryManagementSystem.Domain
                 PublishedDate = insertData.PublishedDate,
                 PublishedDateUnix = ConvertUnixTime.DateTimeStringToUnixTimeMilliseconds(insertData.PublishedDate),
                 Sequence = 1,
-                Status = insertData.Status,
+                Status =0,
                 Title = insertData.Title,
                 UpdateTime = now.ToString("yyyy/MM/dd HH:mm:ss"),
                 UpdateTimeUnix = ConvertUnixTime.DateTimeToUnixTimeMilliseconds(now),
@@ -225,6 +218,71 @@ namespace LibraryManagementSystem.Domain
             await _context.SaveChangesAsync();
 
             return data.Code.ToString();
+        }
+
+        public async Task UpdateBasicBookInfo(BasicBookInfoDtos.UpdateData updateData)
+        {
+            var result = await _context.BasicBookInfos.FirstOrDefaultAsync(m => m.Id == updateData.Id && m.Code == updateData.Code && m.Alive == true);
+
+            if (result == null)
+                throw new ArgumentNullException(nameof(result), "查無書籍資料");
+
+            DateTime now = DateTime.Now;
+
+            result.Isbn = updateData.ISBN;
+            result.Language = updateData.Language;
+            result.Title = updateData.Title;
+            result.Description = updateData.Description;
+            result.Status = updateData.Status;
+            result.PublishedDate = updateData.PublishedDate;
+            result.PublishedDateUnix = ConvertUnixTime.DateTimeStringToUnixTimeMilliseconds(updateData.PublishedDate);
+            result.ImgDataUri = await _fileManager.ConvertToDataUri(updateData.ImgFile);
+            result.UpdateTime = now.ToString("yyyy/MM/dd HH:mm:ss");
+            result.UpdateTimeUnix = ConvertUnixTime.DateTimeToUnixTimeMilliseconds(now);
+
+            var resultOfRelationData = await _context.RelationBookInfos.Where(m => m.BasicBookInfoCode == result.Code && m.Alive == true).ToListAsync();
+
+            var updateRelationDataCode = updateData.RelationData.Select(m => m.Code);
+
+            int i = 1;
+            foreach (var relationData in resultOfRelationData)
+            {
+                if (updateRelationDataCode.Contains(relationData.Code))
+                {
+                    relationData.Sequence = i;
+                    i++;
+                    continue;
+                }
+
+                relationData.Sequence = -1;
+                relationData.Alive = false;
+            }
+
+            var resultOfRelationDataCode = resultOfRelationData.Select(m => m.Code);
+
+            foreach (var item in updateData.RelationData)
+            {
+                if (resultOfRelationDataCode.Contains(item.Code))
+                    continue;
+
+                _context.RelationBookInfos.Add(new RelationBookInfo
+                {
+                    Alive = true,
+                    BasicBookInfoCode = result.Code,
+                    BasicCode = item.Code,
+                    Code = Guid.NewGuid(),
+                    BasicType = item.Type,
+                    CreateTime = now.ToString("yyyy/MM/dd HH:mm:ss"),
+                    CreateTimeUnix = ConvertUnixTime.DateTimeToUnixTimeMilliseconds(now),
+                    UpdateTime = now.ToString("yyyy/MM/dd HH:mm:ss"),
+                    UpdateTimeUnix = ConvertUnixTime.DateTimeToUnixTimeMilliseconds(now),
+                    Sequence = i
+                });
+
+                i++;
+            }
+
+            _context.SaveChanges();
         }
     }
 }

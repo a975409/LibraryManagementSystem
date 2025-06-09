@@ -15,7 +15,7 @@ namespace LibraryManagementSystem.Domain.UnitTest.Fake
             _context.BasicBookInfos.Add(new DomainObjects.BasicBookInfo
             {
                 Alive = true,
-                Code = Guid.NewGuid(),
+                Code = Guid.Parse("c6ec7f91-3bf0-47d9-a224-71b3ac5019b8"),
                 Description = "給孩子一個擁抱，用愛安撫壞情緒。",
                 ImgDataUri = "",
                 Isbn = "9789863714101",
@@ -29,7 +29,29 @@ namespace LibraryManagementSystem.Domain.UnitTest.Fake
                 Title = "魔法抱抱【情緒管理】（理解並安撫孩子的壞情緒)",
                 UpdateTime = "2025/05/30 19:21:47",
                 UpdateTimeUnix = 1748604107,
-                UpdateUserCode = Guid.NewGuid()
+                UpdateUserCode = Guid.NewGuid(),
+                Id = 1
+            });
+
+            _context.BasicBookInfos.Add(new DomainObjects.BasicBookInfo
+            {
+                Alive = true,
+                Code = Guid.Parse("c6ec7f91-3bf0-47d9-a224-71b3ac5019b9"),
+                Description = "給孩子一個擁抱，用愛安撫壞情緒。",
+                ImgDataUri = "",
+                Isbn = "9789863714101",
+                Language = "繁體中文",
+                PublishedDate = "2023/01/01",
+                PublishedDateUnix = 1672502400,
+                CreateTimeUnix = 1748604107,
+                CreateTime = "2025/05/30 19:21:47",
+                Sequence = 1,
+                Status = 1,
+                Title = "魔法抱抱【情緒管理】（理解並安撫孩子的壞情緒)",
+                UpdateTime = "2025/05/30 19:21:47",
+                UpdateTimeUnix = 1748604107,
+                UpdateUserCode = Guid.NewGuid(),
+                Id = 2
             });
 
             return this;
