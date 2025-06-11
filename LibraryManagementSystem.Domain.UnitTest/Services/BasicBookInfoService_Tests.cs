@@ -293,8 +293,12 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
 
         //編輯書籍：書籍名稱、ISBN、出版日期、摘要、書籍語言、作者、出版社必填，且ISBN不能重複
 
+        /// <summary>
+        /// 更新書籍：如果更新已上架的書籍，會跳出錯誤
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        public async Task UpdateBook_StatusNotEqualOne_ArgumentOutOfRangeException()
+        public async Task UpdateBook_StatusEqualOne_ArgumentOutOfRangeException()
         {
             // Arrange
             var context = _contextBuilderFake.AddBasicBookInfo().Build();
@@ -308,7 +312,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
             {
                 Code = Guid.Parse("c6ec7f91-3bf0-47d9-a224-71b3ac5019b9"),
                 Id = 2,
-                Status = 0,
                 Title = "a",
                 Description = "a",
                 ISBN = "a",
@@ -321,6 +324,10 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
             Assert.Equal("Status", exception.ParamName);
         }
 
+        /// <summary>
+        /// 更新書籍：沒找到指定書籍，會跳出錯誤
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task UpdateBook_NotFound_ArgumentNullException()
         {
@@ -336,7 +343,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
             {
                 Code = Guid.Parse("c6ec7f91-3bf0-47d9-a224-71b3ac5019b8"),
                 Id = 5,
-                Status = 0,
                 Title = "a",
                 Description = "a",
                 ISBN = "a",
@@ -348,7 +354,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
 
             Assert.Equal("notFound", exception.ParamName);
         }
-
 
         /// <summary>
         /// 更新書籍：沒填寫必填欄位，會跳出錯誤
@@ -380,7 +385,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
                     {
                         Code = Guid.Empty,
                         Id = 1,
-                        Status = 0,
                         Title = fieldValue,
                         Description = "a",
                         ISBN = "a",
@@ -395,7 +399,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
                     {
                         Code = Guid.NewGuid(),
                         Id = 1,
-                        Status = 0,
                         Title = fieldValue,
                         Description = "a",
                         ISBN = "a",
@@ -410,7 +413,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
                     {
                         Code = Guid.NewGuid(),
                         Id = 1,
-                        Status = 0,
                         Title = "a",
                         Description = "a",
                         ISBN = fieldValue,
@@ -425,7 +427,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
                     {
                         Code = Guid.NewGuid(),
                         Id = 1,
-                        Status = 0,
                         Title = "a",
                         Description = "a",
                         ISBN = "a",
@@ -440,7 +441,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
                     {
                         Code = Guid.NewGuid(),
                         Id = 1,
-                        Status = 0,
                         Title = "a",
                         Description = "a",
                         ISBN = "a",
@@ -455,7 +455,6 @@ namespace LibraryManagementSystem.Domain.UnitTest.Services
                     {
                         Code = Guid.NewGuid(),
                         Id = 1,
-                        Status = 0,
                         Title = "a",
                         Description = fieldValue,
                         ISBN = "a",

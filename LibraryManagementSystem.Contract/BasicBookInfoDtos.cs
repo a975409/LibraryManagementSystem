@@ -170,12 +170,6 @@ namespace LibraryManagementSystem.Contract
             /// </summary>
             public string Description { get; set; }
 
-            /// <summary>
-            /// 書籍狀態
-            /// 0：尚未上架、1：已上架、2：已下架
-            /// </summary>
-            public int Status { get; set; } = 0;
-
             public IFormFile? ImgFile { get; set; } = null;
 
             /// <summary>

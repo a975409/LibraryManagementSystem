@@ -233,7 +233,6 @@ namespace LibraryManagementSystem.Domain
             result.Language = updateData.Language;
             result.Title = updateData.Title;
             result.Description = updateData.Description;
-            result.Status = updateData.Status;
             result.PublishedDate = updateData.PublishedDate;
             result.PublishedDateUnix = ConvertUnixTime.DateTimeStringToUnixTimeMilliseconds(updateData.PublishedDate);
             result.ImgDataUri = await _fileManager.ConvertToDataUri(updateData.ImgFile);
